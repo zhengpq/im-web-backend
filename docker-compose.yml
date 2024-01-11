@@ -1,0 +1,8 @@
+
+version: "3"
+
+services:
+  im-web:
+    image: zhengpq/im-web:latest
+    container_name: im-web
+    network_mode: "host"

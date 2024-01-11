@@ -1,0 +1,53 @@
+name: Build and Deploy Docker Image
+
+on:
+  push:
+    branches:
+      - master # 根据需要调整分支名称
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: zhengpq/im-web:latest
+          build-args: |
+            SECRET_ID=${{ secrets.SECRET_ID }}
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_USER_NAME=${{ secrets.DB_USER_NAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            COS_BUCKET=${{ secrets.COS_BUCKET }}
+            COS_REGION=${{ secrets.COS_REGION }}
+
+      - name: Deploy to remote server
+        env:
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+        run: |
+          sudo apt-get install -y sshpass
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_ID }} "
+            cd /root/dockers
+            if docker ps -a --format "{{.Names}}" | grep -w "im-web"; then
+              docker-compose down
+            fi
+            echo '${{ secrets.DOCKERHUB_TOKEN }}' | docker login --username zhengpq --password-stdin
+            docker-compose pull
+            docker-compose up -d
+          "
