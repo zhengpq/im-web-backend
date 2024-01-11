@@ -42,7 +42,7 @@ import { ErrorCode, errorMessage } from 'src/const/error-code';
 import { ChatGatewayService } from './chat.service';
 
 // @UseInterceptors(TransformSocketResponseInterceptor)
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ cors: { origin: '*' }, port: '3000' })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
