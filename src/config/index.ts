@@ -4,6 +4,7 @@ import { SequelizeModuleOptions } from '@nestjs/sequelize';
 export const corsOrigins = [
   'http://localhost:3001',
   'https://zhengpq.github.io',
+  'http://106.53.170.67',
 ];
 
 // 数据库配置
