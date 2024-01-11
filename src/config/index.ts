@@ -1,5 +1,11 @@
 import { SequelizeModuleOptions } from '@nestjs/sequelize';
 
+// cors 名单
+export const corsOrigins = [
+  'http://localhost:3001',
+  'https://zhengpq.github.io',
+];
+
 // 数据库配置
 export const database: SequelizeModuleOptions = {
   dialect: 'mysql',
