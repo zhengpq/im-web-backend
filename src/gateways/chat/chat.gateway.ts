@@ -39,10 +39,11 @@ import {
 } from 'src/types/group';
 import { ErrorCode, errorMessage } from 'src/const/error-code';
 // import { UpdateFriendDto } from './dto/update-friend.dto';
+import { corsOrigins } from 'src/config';
 import { ChatGatewayService } from './chat.service';
 
 // @UseInterceptors(TransformSocketResponseInterceptor)
-@WebSocketGateway({ cors: { origin: '*' }, port: '3000' })
+@WebSocketGateway({ cors: { origin: corsOrigins } })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
