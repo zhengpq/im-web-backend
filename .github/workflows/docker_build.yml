@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: zhengpq/im-web:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/im-web:latest
           build-args: |
             SECRET_ID=${{ secrets.SECRET_ID }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
@@ -42,12 +42,12 @@ jobs:
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           sudo apt-get install -y sshpass
-          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_ID }} "
-            cd /root/dockers
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_ID }} "
+            cd ${{ secrets.DOCKER_PATH }}
             if docker ps -a --format "{{.Names}}" | grep -w "im-web"; then
               docker-compose down
             fi
-            echo '${{ secrets.DOCKERHUB_TOKEN }}' | docker login --username zhengpq --password-stdin
+            echo '${{ secrets.DOCKERHUB_TOKEN }}' | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             docker-compose pull
             docker-compose up -d
           "
